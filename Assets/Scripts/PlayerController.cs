@@ -7,28 +7,53 @@ public class PlayerController : MonoBehaviour
     
     [Header("Player Settings")]
     public PlayerID playerId;
-    public float moveSpeed = 5f;
+    public float walkSpeed = 5f;
+    public float runSpeed = 8f;
+    public float jumpForce = 5f;
+    public float groundCheckDistance = 1.1f;
+
+    private float currentSpeed;
+    private Vector3 currentMoveDirection;
 
     [Header("Interaction Settings")]
     public float interactRange = 2f;
 
-    // Optional component for physics-based movement later
+    // Components
     private Rigidbody rb;
+    private Animator animator;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>(); // Grabs the animator on the player or the child model
+        
+        if (rb != null)
+        {
+            // Lock rotation so physics collisions never tip the character over!
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+        }
     }
 
     private void Update()
     {
-        HandleMovement();
+        HandleMovementInput();
+        HandleJump();
         HandleInteraction();
     }
 
-    private void HandleMovement()
+    private void FixedUpdate()
+    {
+        if (rb != null && currentMoveDirection != Vector3.zero)
+        {
+            // MovePosition is physics-safe! It perfectly slides along walls instead of teleporting through them.
+            rb.MovePosition(rb.position + currentMoveDirection * currentSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    private void HandleMovementInput()
     {
         Vector3 moveInput = Vector3.zero;
+        bool isRunning = false;
 
         if (playerId == PlayerID.Player1)
         {
@@ -39,6 +64,9 @@ public class PlayerController : MonoBehaviour
                 if (Keyboard.current.sKey.isPressed) moveInput.z = -1;
                 if (Keyboard.current.aKey.isPressed) moveInput.x = -1;
                 if (Keyboard.current.dKey.isPressed) moveInput.x = 1;
+                
+                // Left Shift to Sprint
+                if (Keyboard.current.leftShiftKey.isPressed) isRunning = true;
             }
         }
         else if (playerId == PlayerID.Player2)
@@ -50,6 +78,9 @@ public class PlayerController : MonoBehaviour
                 if (Keyboard.current.downArrowKey.isPressed) moveInput.z = -1;
                 if (Keyboard.current.leftArrowKey.isPressed) moveInput.x = -1;
                 if (Keyboard.current.rightArrowKey.isPressed) moveInput.x = 1;
+                
+                // Right Ctrl to Sprint
+                if (Keyboard.current.rightCtrlKey.isPressed) isRunning = true;
             }
 
             // Controller support (Left Joystick)
@@ -61,6 +92,9 @@ public class PlayerController : MonoBehaviour
                     moveInput.x = stick.x;
                     moveInput.z = stick.y;
                 }
+                
+                // Triggers to Sprint
+                if (Gamepad.current.rightTrigger.isPressed || Gamepad.current.leftTrigger.isPressed) isRunning = true;
             }
         }
 
@@ -70,8 +104,11 @@ public class PlayerController : MonoBehaviour
             moveInput.Normalize();
         }
 
-        // Move the player (kinematic movement)
-        transform.Translate(moveInput * moveSpeed * Time.deltaTime, Space.World);
+        // Update speed state
+        currentSpeed = isRunning ? runSpeed : walkSpeed;
+
+        // Apply the slope math trick and store it for FixedUpdate physics
+        currentMoveDirection = GetSlopeMoveDirection(moveInput);
 
         // Rotate to face movement direction smoothly
         if (moveInput != Vector3.zero)
@@ -79,6 +116,30 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(moveInput);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
+
+        // Send movement speed to the Animator (Walk = 0.5, Run = 1.0)
+        if (animator != null)
+        {
+            float animSpeed = moveInput.magnitude * (isRunning ? 1f : 0.5f);
+            animator.SetFloat("Speed", animSpeed);
+        }
+    }
+
+    private Vector3 GetSlopeMoveDirection(Vector3 moveDirection)
+    {
+        // Don't calculate if we aren't trying to move
+        if (moveDirection == Vector3.zero) return Vector3.zero;
+
+        RaycastHit hit;
+        // Shoot laser to find ground
+        if (Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, out hit, groundCheckDistance))
+        {
+            // Bend the horizontal movement to perfectly match the slant of the hill
+            return Vector3.ProjectOnPlane(moveDirection, hit.normal).normalized * moveDirection.magnitude;
+        }
+        
+        // If we are in the air, just move normally
+        return moveDirection;
     }
 
     private void HandleInteraction()
@@ -112,6 +173,47 @@ public class PlayerController : MonoBehaviour
         {
             Interact();
         }
+    }
+
+    private void HandleJump()
+    {
+        bool jumpPressed = false;
+
+        if (playerId == PlayerID.Player1)
+        {
+            // Spacebar for Player 1
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                jumpPressed = true;
+            }
+        }
+        else if (playerId == PlayerID.Player2)
+        {
+            // Right Shift for Player 2
+            if (Keyboard.current != null && Keyboard.current.rightShiftKey.wasPressedThisFrame)
+            {
+                jumpPressed = true;
+            }
+            
+            // Controller East button (B on Xbox / Circle on PlayStation)
+            if (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame)
+            {
+                jumpPressed = true;
+            }
+        }
+
+        if (jumpPressed && IsGrounded() && rb != null)
+        {
+            // Reset vertical velocity for consistent jump height
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+    private bool IsGrounded()
+    {
+        // Simple raycast downwards to check if we are standing on something
+        return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, groundCheckDistance);
     }
 
     private void Interact()
