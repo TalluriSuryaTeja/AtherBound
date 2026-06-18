@@ -11,9 +11,7 @@
     - [ ] Update `ResourceNode.cs` script.
 - [ ] **UI Implementation:**
     - [ ] Create UI for Mana bars, Day/Night clock, Inventory, Character Profile, Skill Tree, and Profession progress.
-- [ ] **Core RPG Systems (Design Phase):**
-    - [ ] **Inventory System:** Script `InventoryManager` and create `ItemData` ScriptableObject.
-    - [ ] **Character Stats & Leveling:** Script `PlayerStats` component and design XP curve.
+- [ ] **Core RPG Systems (Further Development):**
     - [ ] **Skill System:** Design Skill Tree, create `SkillData` ScriptableObject, and script `SkillManager`.
     - [ ] **Gathering & Professions:** Script a `ProfessionManager` and create `ProfessionData` ScriptableObject.
 - [ ] **Monster AI (Wild):** Script basic monster AI and spawner.
@@ -27,6 +25,20 @@
 
 ## Completed
 
+- [X] **Core RPG Backend Systems:**
+    - [X] Designed and implemented a data-driven architecture using ScriptableObjects.
+    - [X] **Enums & Modifiers:** Created `Enums.cs` for all stat and slot types.
+    - [X] **Character Data:**
+        - [X] `RaceData.cs`: Defines racial stats and evolution paths.
+        - [X] `ClassData.cs`: Defines class progression, stats, and mastery bonuses.
+    - [X] **Item & Equipment Data:**
+        - [X] `ItemData.cs`: Base class for all items.
+        - [X] `EquipmentData.cs`: Defines equippable items and their stat modifiers.
+    - [X] **Core Manager Scripts:**
+        - [X] `PlayerStats.cs`: Central hub for calculating all character stats from various sources.
+        - [X] `InventoryManager.cs`: Manages adding, removing, and stacking items.
+        - [X] `EquipmentManager.cs`: Manages equipping and unequipping items.
+        - [X] `ClassManager.cs`: Manages class switching, leveling, and mastery.
 - [X] **Project Initialization:**
     - [X] Set up Unity project with Starter Assets (URP).
     - [X] Established project vision and documentation (`PROJECT_VISION.md`, `TASK_TRACKER.md`, `CHANGELOG.md`).
