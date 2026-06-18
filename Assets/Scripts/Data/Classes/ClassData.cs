@@ -29,11 +29,3 @@ public class ClassRequirement
     public ClassData requiredClass;
     public int requiredLevel;
 }
-
-public enum StatType
-{
-    Strength,
-    Dexterity,
-    Intelligence,
-    Vitality
-}
