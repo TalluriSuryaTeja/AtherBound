@@ -1,9 +1,14 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Profession", menuName = "Aetherbound/Profession")]
+[CreateAssetMenu(fileName = "New Profession", menuName = "Aetherbound/Data/Profession")]
 public class ProfessionData : ScriptableObject
 {
+    [Header("Profession Info")]
     public string professionName;
-    [TextArea(3, 10)]
-    public string professionDescription;
+    public string description;
+    public Sprite icon;
+
+    [Header("Progression")]
+    public int level;
+    public int experience;
 }

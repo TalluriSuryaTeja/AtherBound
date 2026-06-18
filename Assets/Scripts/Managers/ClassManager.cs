@@ -3,155 +3,61 @@ using System.Collections.Generic;
 
 public class ClassManager : MonoBehaviour
 {
-    [Header("Active Class")]
-    public ClassData activeClass;
+    public static ClassManager Instance { get; private set; }
 
-    [Header("Class Progress")]
+    [Header("Player Classes")]
+    public ClassData currentClass;
     public Dictionary<ClassData, int> classLevels = new Dictionary<ClassData, int>();
-    public Dictionary<ClassData, float> classXP = new Dictionary<ClassData, float>();
+    public Dictionary<ClassData, int> classExperience = new Dictionary<ClassData, int>();
 
-    [Header("Mastery")]
-    public HashSet<ClassData> masteredClasses = new HashSet<ClassData>();
-
-    private PlayerStats playerStats;
-
-    void Awake()
+    private void Awake()
     {
-        playerStats = GetComponent<PlayerStats>();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
-    /// <summary>
-    /// Sets a new class as the active one and recalculates stats.
-    /// </summary>
     public void SwitchClass(ClassData newClass)
     {
-        if (newClass == null || !IsClassUnlocked(newClass)) 
+        if (IsClassUnlocked(newClass))
         {
-            Debug.LogWarning($"Cannot switch to {newClass?.className ?? "null"}. Class is not unlocked.");
-            return;
+            currentClass = newClass;
+            Debug.Log("Switched to class: " + newClass.className);
         }
-
-        if (activeClass != newClass)
+        else
         {
-            activeClass = newClass;
-            playerStats.RecalculateAllStats(); 
-            Debug.Log($"Switched to {newClass.className} class.");
+            Debug.LogWarning("Attempted to switch to a locked class: " + newClass.className);
         }
     }
 
-    /// <summary>
-    /// Adds XP to the currently active class and handles leveling up.
-    /// </summary>
-    public void AddClassXP(float amount)
-    {
-        if (activeClass == null) return;
-
-        int currentLevel = GetClassLevel(activeClass);
-        if (currentLevel >= activeClass.maxLevel) return; // Cannot gain XP if max level
-
-        if (!classXP.ContainsKey(activeClass))
-        {
-            classXP[activeClass] = 0;
-        }
-        classXP[activeClass] += amount;
-
-        float xpForNextLevel = 100 * Mathf.Pow(1.1f, currentLevel); // Example formula: 100, 110, 121, ...
-
-        while (classXP[activeClass] >= xpForNextLevel)
-        {
-            classXP[activeClass] -= xpForNextLevel;
-            LevelUp(activeClass);
-            currentLevel = GetClassLevel(activeClass);
-            xpForNextLevel = 100 * Mathf.Pow(1.1f, currentLevel);
-        }
-    }
-
-    private void LevelUp(ClassData classToLevel)
-    {
-        if (!classLevels.ContainsKey(classToLevel))
-        {
-            classLevels[classToLevel] = 0;
-        }
-
-        classLevels[classToLevel]++;
-        int newLevel = classLevels[classToLevel];
-        Debug.Log($"{classToLevel.className} leveled up to {newLevel}!");
-
-        // Check for mastery
-        if (newLevel >= classToLevel.maxLevel)
-        {
-            if (masteredClasses.Add(classToLevel))
-            {
-                Debug.LogWarning($"CLASS MASTERED: {classToLevel.className}! Permanent mastery bonus unlocked.");
-            }
-        }
-
-        // After any level up, recalculate stats
-        playerStats.RecalculateAllStats();
-    }
-    
-    /// <summary>
-    /// Gets the current level for a given class.
-    /// </summary>
-    public int GetClassLevel(ClassData classData)
-    {
-        return classLevels.TryGetValue(classData, out int level) ? level : 0;
-    }
-
-    /// <summary>
-    /// Checks if a player meets the requirements to use a class.
-    /// </summary>
     public bool IsClassUnlocked(ClassData classData)
     {
-        if (classData.unlockRequirements == null || classData.unlockRequirements.Count == 0)
+        foreach (var requirement in classData.unlockRequirements)
         {
-            return true; // Starter class
-        }
-
-        foreach (var req in classData.unlockRequirements)
-        {
-            if (GetClassLevel(req.requiredClass) < req.requiredLevel)
+            if (!classLevels.ContainsKey(requirement.requiredClass) || classLevels[requirement.requiredClass] < requirement.requiredLevel)
             {
-                return false; // Requirement not met
+                return false;
             }
         }
-
         return true;
     }
 
-    /// <summary>
-    /// Calculates the total stat bonus from the currently active class and its level.
-    /// </summary>
-    public List<StatModifier> GetActiveClassStatBonus()
+    public void AddExperience(int amount)
     {
-        List<StatModifier> bonuses = new List<StatModifier>();
-        if (activeClass != null)
-        {
-            int level = GetClassLevel(activeClass);
-            if (level > 0)
-            {
-                foreach (var modifier in activeClass.statBonusPerLevel)
-                {
-                    bonuses.Add(new StatModifier { stat = modifier.stat, value = modifier.value * level });
-                }
-            }
-        }
-        return bonuses;
-    }
+        if (currentClass == null) return;
 
-    /// <summary>"""
-    /// Calculates the total permanent stat bonuses from all mastered classes.
-    /// </summary>
-    public List<StatModifier> GetTotalMasteryBonuses()
-    {
-        List<StatModifier> totalBonuses = new List<StatModifier>();
-        foreach (ClassData masteredClass in masteredClasses)
+        if (!classExperience.ContainsKey(currentClass))
         {
-            if(masteredClass.masteryBonus != null)
-            {
-                totalBonuses.AddRange(masteredClass.masteryBonus);
-            }
+            classExperience[currentClass] = 0;
         }
-        return totalBonuses;
+        classExperience[currentClass] += amount;
+
+        // TODO: Add logic for leveling up
     }
 }
