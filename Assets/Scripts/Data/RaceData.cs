@@ -1,18 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// A simple struct to hold a stat type and its modification value.
-/// Used by races, classes, and equipment.
-/// We are keeping it in this file since it is not a public class and can be used by other files as well
-/// </summary>
-[System.Serializable]
-public struct StatModifier
-{
-    public StatType stat;
-    public float value;
-}
-
 [CreateAssetMenu(fileName = "New Race", menuName = "Aetherbound/Character/Race")]
 public class RaceData : ScriptableObject
 {

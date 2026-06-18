@@ -1,21 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// A struct used by MonsterData, MonsterStats, and other systems.
-// It's defined here for clarity, but could be in a shared file like Enums.cs
-[System.Serializable]
-public struct StatModifier
-{
-    public Stat stat;
-    public float value;
-}
-
-[System.Serializable]
-public struct LootDrop
-{
-    public ItemData item;
-    [Range(0f, 1f)] public float dropChance;
-}
 
 [CreateAssetMenu(fileName = "New MonsterData", menuName = "AetherBound/Data/Monster")]
 public class MonsterData : ScriptableObject
