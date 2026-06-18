@@ -1,4 +1,3 @@
-
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -37,6 +36,10 @@ public class AetherboundPlayerController : MonoBehaviour
 
     [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
     public float FallTimeout = 0.15f;
+    
+    [Header("Magic")]
+    [Tooltip("The amount of mana a magic attack costs.")]
+    public float magicManaCost = 10f;
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -97,6 +100,7 @@ public class AetherboundPlayerController : MonoBehaviour
     private Animator _animator;
     private CharacterController _controller;
     private AetherboundInputs _input;
+    private ManaManager _manaManager;
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
@@ -119,6 +123,7 @@ public class AetherboundPlayerController : MonoBehaviour
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<AetherboundInputs>();
+        _manaManager = GetComponent<ManaManager>();
 #if ENABLE_INPUT_SYSTEM 
         _playerInput = GetComponent<PlayerInput>();
 #else
@@ -283,10 +288,22 @@ public class AetherboundPlayerController : MonoBehaviour
 
     private void HandleMagic()
     {
-        if (_hasAnimator && _input.magic)
+        if (_input.magic)
         {
-            _animator.SetTrigger(_animIDMagic);
-            // We'll add mana cost and other logic here later
+            if (_manaManager != null && _manaManager.currentMana >= magicManaCost)
+            {
+                _manaManager.UseMana(magicManaCost);
+                if (_hasAnimator)
+                {
+                    _animator.SetTrigger(_animIDMagic);
+                }
+            }
+            else
+            {
+                Debug.Log("Not enough mana to cast magic!");
+            }
+
+            _input.magic = false;
         }
     }
 
