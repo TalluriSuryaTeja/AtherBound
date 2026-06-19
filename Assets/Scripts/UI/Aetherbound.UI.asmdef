@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Aetherbound.Data",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Aetherbound.Managers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

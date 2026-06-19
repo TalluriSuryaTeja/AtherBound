@@ -13,12 +13,9 @@ public class UIManaBar : MonoBehaviour
 
     private void OnEnable()
     {
-        // Assuming a ManaManager exists and is accessible.
-        // You might need to find it or have it passed in.
         if (ManaManager.Instance != null)
         {
             ManaManager.Instance.onManaChanged += UpdateManaBar;
-            // Set initial value
             UpdateManaBar(ManaManager.Instance.currentMana, ManaManager.Instance.maxMana);
         }
     }

@@ -30,9 +30,24 @@ public class InventorySlot
 
 public class InventoryManager : MonoBehaviour
 {
+    public static InventoryManager Instance { get; private set; }
+
     [Header("Inventory")]
     public List<InventorySlot> inventorySlots = new List<InventorySlot>();
     public int inventorySize = 20;
+
+    private void Awake()
+    {
+        // Singleton pattern
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     /// <summary>
     /// Adds an item (or a stack of items) to the inventory.

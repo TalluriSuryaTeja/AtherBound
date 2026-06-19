@@ -29,8 +29,8 @@ public class MonsterStats : MonoBehaviour
     {
         // Initial stat calculation
         CalculateStats();
-        currentHealth = GetStat(Stat.Health);
-        currentMana = GetStat(Stat.Mana);
+        currentHealth = GetStat(StatType.Health);
+        currentMana = GetStat(StatType.Mana);
     }
 
     private void HandleTimeOfDayChange(GameManager.TimeOfDay newTimeOfDay)
@@ -81,9 +81,14 @@ public class MonsterStats : MonoBehaviour
         }
     }
 
-    public float GetStat(Stat stat)
+    public float GetStat(StatType statType)
     {
-        return finalStats.TryGetValue(stat, out float value) ? value : 0f;
+        Stat statObject = finalStats.Keys.FirstOrDefault(s => s.statType == statType);
+        if (statObject != null)
+        {
+            return finalStats[statObject];
+        }
+        return 0f;
     }
 
     public void TakeDamage(float amount)

@@ -14,11 +14,19 @@ public class GameManager : MonoBehaviour
 
     // Event to broadcast when the time of day changes
     public static event Action<TimeOfDay> OnTimeOfDayChanged;
+    public static event Action OnResourceUpdated;
+
 
     [Header("Day/Night Cycle")]
     [Range(0, 1)]
     public float timeOfDay; // 0-1, 0 is midnight, 0.5 is noon
     public float dayDuration = 120f; // in seconds
+
+    [Header("Player Resources")]
+    public int woodCount = 0;
+    public int coalCount = 0;
+    public int metalCount = 0;
+    public int aetherEnergy = 0;
 
     private TimeOfDay currentTimeOfDay;
 
@@ -63,5 +71,25 @@ public class GameManager : MonoBehaviour
     public TimeOfDay GetCurrentTimeOfDay()
     {
         return currentTimeOfDay;
+    }
+
+    public void AddResource(string resourceType, int amount)
+    {
+        switch (resourceType)
+        {
+            case "Wood":
+                woodCount += amount;
+                break;
+            case "Coal":
+                coalCount += amount;
+                break;
+            case "Metal":
+                metalCount += amount;
+                break;
+            case "Aether":
+                aetherEnergy += amount;
+                break;
+        }
+        OnResourceUpdated?.Invoke();
     }
 }

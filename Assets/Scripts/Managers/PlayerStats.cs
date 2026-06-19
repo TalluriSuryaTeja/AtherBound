@@ -4,6 +4,8 @@ using System.Linq;
 
 public class PlayerStats : MonoBehaviour
 {
+    public static PlayerStats Instance { get; private set; }
+
     [Header("Core Identity")]
     public RaceData currentRaceData;
     public int playerLevel = 1;
@@ -49,6 +51,16 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
+        // Singleton pattern
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+
         classManager = GetComponent<ClassManager>();
         equipmentManager = GetComponent<EquipmentManager>();
         

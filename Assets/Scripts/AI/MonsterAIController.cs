@@ -67,7 +67,7 @@ public class MonsterAIController : MonoBehaviour
             patrolPoints = new Vector3[] { transform.position };
         }
 
-        navMeshAgent.SetPosition(transform.position);
+        navMeshAgent.Warp(transform.position);
         GoToNextPatrolPoint();
     }
 
@@ -96,13 +96,13 @@ public class MonsterAIController : MonoBehaviour
         {
             currentDetectionRadius = baseDetectionRadius * nightAggressionMultiplier;
             currentChaseSpeed = chaseSpeed * nightAggressionMultiplier;
-            Debug.Log($"{monsterStats.monsterName} becomes more aggressive!");
+            Debug.Log($"{monsterStats.monsterData.monsterName} becomes more aggressive!");
         }
         else
         {
             currentDetectionRadius = baseDetectionRadius;
             currentChaseSpeed = chaseSpeed;
-            Debug.Log($"{monsterStats.monsterName} calms down.");
+            Debug.Log($"{monsterStats.monsterData.monsterName} calms down.");
         }
     }
 
@@ -144,7 +144,7 @@ public class MonsterAIController : MonoBehaviour
     {
         navMeshAgent.isStopped = true;
         // TODO: Implement attack logic
-        Debug.Log($"{monsterStats.monsterName} is attacking the player!");
+        Debug.Log($"{monsterStats.monsterData.monsterName} is attacking the player!");
 
         if (distanceToPlayer > attackRange)
         {

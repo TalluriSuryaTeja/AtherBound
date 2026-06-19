@@ -52,7 +52,7 @@ public class ResourceNode : MonoBehaviour
         // Grant XP to the player
         if (associatedProfession != null && ProfessionManager.Instance != null)
         {
-            ProfessionManager.Instance.AddExperience(associatedProfession, xpValue);
+            ProfessionManager.Instance.AddExperience(associatedProfession, (int)xpValue);
         }
 
         // Add the item to the player's inventory
