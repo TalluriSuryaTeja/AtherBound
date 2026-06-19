@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class PlayerStats : MonoBehaviour
 {
     public static PlayerStats Instance { get; private set; }
+    public event Action onStatsChanged;
 
     [Header("Core Identity")]
     public RaceData currentRaceData;
@@ -51,7 +53,6 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
-        // Singleton pattern
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -67,9 +68,6 @@ public class PlayerStats : MonoBehaviour
         RecalculateAllStats();
     }
 
-    /// <summary>
-    /// Helper method to populate the initial stat dictionary.
-    /// </summary>
     private Dictionary<StatType, float> GetBaseStats()
     {
         return new Dictionary<StatType, float>
@@ -81,9 +79,6 @@ public class PlayerStats : MonoBehaviour
         };
     }
 
-    /// <summary>
-    /// Helper method to add a list of modifiers to a stat dictionary.
-    /// </summary>
     private void AddModifiersToDict(Dictionary<StatType, float> dict, List<StatModifier> modifiers)
     {
         if (modifiers == null) return;
@@ -101,7 +96,6 @@ public class PlayerStats : MonoBehaviour
     {
         var stats = GetBaseStats();
 
-        // Add bonuses from all sources
         if (currentRaceData != null) AddModifiersToDict(stats, currentRaceData.baseStatModifiers);
         if (classManager != null)
         {
@@ -113,34 +107,26 @@ public class PlayerStats : MonoBehaviour
             AddModifiersToDict(stats, equipmentManager.GetAllEquippedStatBonuses());
         }
 
-        // --- Assign Final Core Stats ---
         finalStrength = stats.GetValueOrDefault(StatType.Strength);
         finalDexterity = stats.GetValueOrDefault(StatType.Dexterity);
         finalIntelligence = stats.GetValueOrDefault(StatType.Intelligence);
         finalVitality = stats.GetValueOrDefault(StatType.Vitality);
 
-        // --- Calculate and Assign Final Derived Stats ---
-        // These formulas are examples and can be tuned for your game's balance.
-
-        // Resources
         finalMaxHealth = stats.GetValueOrDefault(StatType.MaxHealth) + (finalVitality * 10);
         finalMaxMana = stats.GetValueOrDefault(StatType.MaxMana) + (finalIntelligence * 10);
         finalHealthRegen = stats.GetValueOrDefault(StatType.HealthRegen) + (finalVitality * 0.1f);
         finalManaRegen = stats.GetValueOrDefault(StatType.ManaRegen) + (finalIntelligence * 0.1f);
 
-        // Offensive
         finalMeleeDamage = stats.GetValueOrDefault(StatType.MeleeDamage) + (finalStrength * 2);
         finalMagicDamage = stats.GetValueOrDefault(StatType.MagicDamage) + (finalIntelligence * 2);
         finalAttackSpeed = stats.GetValueOrDefault(StatType.AttackSpeed) + (finalDexterity * 0.01f);
         finalCritChance = stats.GetValueOrDefault(StatType.CritChance) + (finalDexterity * 0.05f);
-        finalCritDamage = stats.GetValueOrDefault(StatType.CritDamage) + 1.5f; // Base 150% crit damage
+        finalCritDamage = stats.GetValueOrDefault(StatType.CritDamage) + 1.5f; 
 
-        // Defensive
         finalArmor = stats.GetValueOrDefault(StatType.Armor) + (finalStrength * 0.5f);
         finalMagicDefense = stats.GetValueOrDefault(StatType.MagicDefense) + (finalIntelligence * 0.5f);
         finalDodgeChance = stats.GetValueOrDefault(StatType.DodgeChance) + (finalDexterity * 0.02f);
         
-        // Resistances
         finalFireResistance = stats.GetValueOrDefault(StatType.FireResistance);
         finalWaterResistance = stats.GetValueOrDefault(StatType.WaterResistance);
         finalEarthResistance = stats.GetValueOrDefault(StatType.EarthResistance);
@@ -148,6 +134,7 @@ public class PlayerStats : MonoBehaviour
         finalArcaneResistance = stats.GetValueOrDefault(StatType.ArcaneResistance);
 
         Debug.Log("Player stats have been recalculated with full logic.");
+        onStatsChanged?.Invoke();
     }
 
     public void AddRaceXP(long amount)
@@ -165,21 +152,15 @@ public class PlayerStats : MonoBehaviour
         {
             Debug.Log($"RACE EVOLVED! From {currentRaceData.raceName} to {currentRaceData.evolutionTarget.raceName}");
             currentRaceData = currentRaceData.evolutionTarget;
-            RecalculateAllStats();
+            RecalculateAllStats(); 
         }
     }
 
     public void TakeDamage(float amount, DamageType type)
     {
-        // Example damage calculation (level-based mitigation)
-        // float defenseRating = finalArmor; // Change based on DamageType
-        // float damageReduction = defenseRating / (defenseRating + (50 * playerLevel));
-        // float finalDamage = amount * (1 - damageReduction);
-        // currentHealth -= finalDamage;
     }
 }
 
-// Extension method for convenience
 public static class DictionaryExtensions
 {
     public static float GetValueOrDefault(this Dictionary<StatType, float> dict, StatType key)
