@@ -4,7 +4,8 @@
     "references": [
         "Aetherbound.Data",
         "Aetherbound.Managers",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

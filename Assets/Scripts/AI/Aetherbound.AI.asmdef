@@ -2,7 +2,8 @@
     "name": "Aetherbound.AI",
     "rootNamespace": "",
     "references": [
-        "Aetherbound.Data"
+        "Aetherbound.Data",
+        "Aetherbound.Managers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

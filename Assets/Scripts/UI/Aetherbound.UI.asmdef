@@ -2,7 +2,8 @@
     "name": "Aetherbound.UI",
     "rootNamespace": "",
     "references": [
-        "Aetherbound.Data"
+        "Aetherbound.Data",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
