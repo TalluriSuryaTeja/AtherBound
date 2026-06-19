@@ -10,7 +10,6 @@
     - [ ] Create UI for Mana bars, Day/Night clock, Inventory, Character Profile, Skill Tree, and Profession progress.
 - [ ] **Core RPG Systems (Further Development):**
     - [ ] **Skill System:** Design Skill Tree, script `SkillManager`.
-    - [ ] **Gathering & Professions:** Script a `ProfessionManager` and create `ProfessionData` ScriptableObject.
 - [ ] **Monster Taming & Evolution System (Design Phase):** Create `PetData` and `FoodData` ScriptableObjects.
 - [ ] **Blacksmithing Mini-game (Design Phase):** Design UI and script core logic.
 
@@ -21,6 +20,8 @@
 
 ## Completed
 
+- [X] **Gathering & Professions:**
+    - [X] Script a `ProfessionManager` and create `ProfessionData` ScriptableObject.
 - [X] **Game Logic & World:**
     - [X] Created `GameManager.cs` to manage the Day/Night cycle. The system dynamically alters monster stats and loot based on the time of day.
     - [X] Created `ResourceNode.cs` to allow for the creation of gatherable resources in the world.

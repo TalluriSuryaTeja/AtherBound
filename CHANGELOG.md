@@ -1,5 +1,17 @@
 # Project Aetherbound Changelog
 
+## [2024-05-24]
+
+### Fixed
+- **Compilation Errors:**
+    - Refactored the stat system to use a single, unified `StatType` enum, resolving widespread compilation errors caused by conflicting `Stat` and `StatType` enums.
+    - Updated `MonsterStats.cs` to correctly use the `StatType` enum and its associated data structures.
+
+### Added
+- **Profession System Events:**
+    - Implemented `onExperienceChanged` and `onLevelUp` events in `ProfessionManager.cs` to allow UI elements to react to profession progression.
+    - Added `GetExperience`, `GetXPForNextLevel`, and `GetLevel` methods to provide the necessary data for the UI.
+
 ## [2024-05-23]
 
 ### Added

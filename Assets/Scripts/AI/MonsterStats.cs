@@ -12,7 +12,7 @@ public class MonsterStats : MonoBehaviour
     public float currentHealth;
     public float currentMana;
 
-    private Dictionary<Stat, float> finalStats = new Dictionary<Stat, float>();
+    private Dictionary<StatType, float> finalStats = new Dictionary<StatType, float>();
     private bool isNight = false;
 
     void OnEnable()
@@ -29,8 +29,8 @@ public class MonsterStats : MonoBehaviour
     {
         // Initial stat calculation
         CalculateStats();
-        currentHealth = GetStat(StatType.Health);
-        currentMana = GetStat(StatType.Mana);
+        currentHealth = GetStat(StatType.MaxHealth);
+        currentMana = GetStat(StatType.MaxMana);
     }
 
     private void HandleTimeOfDayChange(GameManager.TimeOfDay newTimeOfDay)
@@ -83,10 +83,9 @@ public class MonsterStats : MonoBehaviour
 
     public float GetStat(StatType statType)
     {
-        Stat statObject = finalStats.Keys.FirstOrDefault(s => s.statType == statType);
-        if (statObject != null)
+        if (finalStats.ContainsKey(statType))
         {
-            return finalStats[statObject];
+            return finalStats[statType];
         }
         return 0f;
     }
