@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Aetherbound.Data",
-        "Unity.InputSystem",
-        "Aetherbound.Core"
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
