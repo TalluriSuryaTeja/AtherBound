@@ -2,7 +2,9 @@
     "name": "Aetherbound.Managers",
     "rootNamespace": "",
     "references": [
-        "Aetherbound.Data"
+        "Aetherbound.Data",
+        "Unity.InputSystem",
+        "Aetherbound.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
