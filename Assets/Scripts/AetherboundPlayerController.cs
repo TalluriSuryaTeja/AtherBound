@@ -101,6 +101,7 @@ public class AetherboundPlayerController : MonoBehaviour
     private CharacterController _controller;
     private AetherboundInputs _input;
     private ManaManager _manaManager;
+    private MagicCasting _magicCasting;
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
@@ -124,6 +125,7 @@ public class AetherboundPlayerController : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<AetherboundInputs>();
         _manaManager = GetComponent<ManaManager>();
+        _magicCasting = GetComponent<MagicCasting>();
 #if ENABLE_INPUT_SYSTEM 
         _playerInput = GetComponent<PlayerInput>();
 #else
@@ -297,6 +299,7 @@ public class AetherboundPlayerController : MonoBehaviour
                 {
                     _animator.SetTrigger(_animIDMagic);
                 }
+                _magicCasting?.CastMagic();
             }
             else
             {

@@ -6,10 +6,10 @@ This guide details how to set up the player input system, including local co-op 
 
 ## Part 1: Creating the Input Actions Asset
 
-1.  **Create the Asset:** In the **Project** window, right-click and go to **Create > Input Actions**. Name the new asset `PlayerInputActions`.
-2.  **Enable Auto-Generation:** Select the `PlayerInputActions` asset. In the Inspector, check the box for **"Generate C# Class"** and click **"Apply"**. This will create the `PlayerInputActions.cs` script that our `InputManager` uses.
+1.  **Use the existing asset:** The project already has `Assets/Scripts/AetherboundInputActions.inputactions`. Select it in the **Project** window.
+2.  **Enable Auto-Generation:** In the Inspector, check **"Generate C# Class"** and click **"Apply"**. This generates `AetherboundInputActions.cs`, which `InputManager` uses for rebinding.
 3.  **Define Action Maps:**
-    *   Double-click the `PlayerInputActions` asset to open the Action Editor.
+    *   Double-click the `AetherboundInputActions` asset to open the Action Editor.
     *   Click the **"+"** under **Action Maps** to create a new map. Name it `Player`.
 4.  **Define Actions & Bindings:**
     *   In the `Player` action map, create the following actions:
@@ -34,6 +34,8 @@ This guide details how to set up the player input system, including local co-op 
 ---
 
 ## Part 2: Setting up the InputManager Singleton
+
+`InputManager` handles **rebinding and saving control overrides** for `AetherboundInputActions`. Per-player movement still comes from the `PlayerInput` component on the player prefab (see `AetherboundInputs`).
 
 1.  **Create an Empty GameObject:** In your first scene (e.g., a Main Menu or initialization scene), create an empty GameObject and name it `InputManager`.
 2.  **Add the Script:** Add the `InputManager.cs` script to this GameObject.

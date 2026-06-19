@@ -3,21 +3,13 @@ using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
-    public static SkillManager Instance { get; private set; }
-
     public List<SkillData> learnedSkills = new List<SkillData>();
+
+    private PlayerStats playerStats;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        playerStats = GetComponent<PlayerStats>();
     }
 
     public bool IsSkillLearned(SkillData skill)
@@ -29,8 +21,7 @@ public class SkillManager : MonoBehaviour
     {
         if (IsSkillLearned(skill)) return false; // Already learned
 
-        // Check level requirement (assuming a PlayerStats manager exists)
-        if (PlayerStats.Instance.level < skill.skillLevelRequirement) return false;
+        if (playerStats == null || playerStats.playerLevel < skill.skillLevelRequirement) return false;
 
         // Check for prerequisite skills
         foreach (var prerequisite in skill.prerequisiteSkills)

@@ -1,7 +1,5 @@
-
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 using System.Linq;
 using System;
 
@@ -9,9 +7,8 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance { get; private set; }
 
-    public PlayerInputActions PlayerActions { get; private set; }
+    public AetherboundInputActions InputActions { get; private set; }
 
-    // Events for UI to hook into for rebinding
     public event Action<string, string> OnRebindComplete;
     public event Action<string> OnRebindCancel;
     public event Action<string, string> OnRebindStart;
@@ -28,39 +25,41 @@ public class InputManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        PlayerActions = new PlayerInputActions();
-        PlayerActions.Enable();
-        
+        InputActions = new AetherboundInputActions();
+        InputActions.Enable();
+
         LoadOverrides();
+    }
+
+    private void OnDestroy()
+    {
+        InputActions?.Dispose();
     }
 
     public void StartRebinding(string actionName, int bindingIndex, string deviceLayout)
     {
-        InputAction action = PlayerActions.asset.FindAction(actionName);
+        InputAction action = InputActions.asset.FindAction(actionName);
         if (action == null || action.bindings.Count <= bindingIndex)
         {
             Debug.LogError($"Could not find action '{actionName}' or binding index '{bindingIndex}'.");
             return;
         }
 
-        // Filter for the specific device (Keyboard or Gamepad)
         var binding = action.bindings[bindingIndex];
-        string controlScheme = deviceLayout.Contains("Keyboard") ? "Keyboard&Mouse" : "Gamepad";
+        string controlScheme = deviceLayout.Contains("Keyboard") ? "KeyboardMouse" : "Gamepad";
         if (binding.groups.Split(';').All(g => g != controlScheme))
         {
-             Debug.LogWarning($"The binding at index {bindingIndex} for action {actionName} does not belong to the {controlScheme} scheme. This may not be the intended binding to change.");
+            Debug.LogWarning($"The binding at index {bindingIndex} for action {actionName} does not belong to the {controlScheme} scheme. This may not be the intended binding to change.");
         }
-
 
         OnRebindStart?.Invoke(actionName, GetBindingDisplayName(actionName, bindingIndex));
 
         rebindingOperation = action.PerformInteractiveRebinding(bindingIndex)
-            .WithControlsExcluding("Mouse") // Don't allow mouse movement to be a binding
+            .WithControlsExcluding("Mouse")
             .OnMatchWaitForAnother(0.1f)
             .OnComplete(operation =>
             {
                 operation.Dispose();
-                string newBinding = action.bindings[bindingIndex].effectivePath;
                 OnRebindComplete?.Invoke(actionName, GetBindingDisplayName(actionName, bindingIndex));
                 SaveBindingOverride(action);
             })
@@ -74,7 +73,7 @@ public class InputManager : MonoBehaviour
 
     public string GetBindingDisplayName(string actionName, int bindingIndex)
     {
-        InputAction action = PlayerActions.asset.FindAction(actionName);
+        InputAction action = InputActions.asset.FindAction(actionName);
         if (action == null || action.bindings.Count <= bindingIndex)
         {
             return "N/A";
@@ -93,7 +92,7 @@ public class InputManager : MonoBehaviour
 
     public void LoadOverrides()
     {
-        foreach (var map in PlayerActions.asset.actionMaps)
+        foreach (var map in InputActions.asset.actionMaps)
         {
             foreach (var action in map.actions)
             {
@@ -111,17 +110,16 @@ public class InputManager : MonoBehaviour
 
     public void ResetAllBindings()
     {
-        foreach (var map in PlayerActions.asset.actionMaps)
+        foreach (var map in InputActions.asset.actionMaps)
         {
             map.RemoveAllBindingOverrides();
         }
-        
-        // Clear the saved preferences as well
-        foreach (var map in PlayerActions.asset.actionMaps)
+
+        foreach (var map in InputActions.asset.actionMaps)
         {
             foreach (var action in map.actions)
             {
-                 for (int i = 0; i < action.bindings.Count; i++)
+                for (int i = 0; i < action.bindings.Count; i++)
                 {
                     PlayerPrefs.DeleteKey(action.actionMap + action.name + i);
                 }

@@ -20,13 +20,6 @@ public class AetherboundInputs : MonoBehaviour
     public bool cursorLocked = true;
     public bool cursorInputForLook = true;
 
-    private MagicCasting magicCasting;
-
-    private void Awake()
-    {
-        magicCasting = GetComponent<MagicCasting>();
-    }
-
 #if ENABLE_INPUT_SYSTEM
     public void OnMove(InputValue value)
     {
@@ -54,12 +47,6 @@ public class AetherboundInputs : MonoBehaviour
     public void OnMagic(InputValue value)
     {
         MagicInput(value.isPressed);
-        
-        // If the magic input was pressed and we have a reference to the MagicCasting script
-        if (value.isPressed && magicCasting != null)
-        {
-            magicCasting.CastMagic();
-        }
     }
 #endif
 
