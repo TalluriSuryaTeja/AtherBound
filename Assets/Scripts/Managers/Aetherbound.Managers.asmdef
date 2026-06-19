@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "Aetherbound.Data",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Aetherbound.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
