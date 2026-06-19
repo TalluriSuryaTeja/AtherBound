@@ -1,10 +1,7 @@
 {
-    "name": "Aetherbound.Managers",
+    "name": "Aetherbound.Data",
     "rootNamespace": "",
-    "references": [
-        "Unity.InputSystem",
-        "Aetherbound.Data"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
