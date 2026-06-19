@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -9,6 +10,8 @@ using UnityEngine.InputSystem;
 #endif
 public class AetherboundPlayerController : MonoBehaviour
 {
+    public event Action OnMagicCast;
+
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
     public float MoveSpeed = 2.0f;
@@ -36,10 +39,6 @@ public class AetherboundPlayerController : MonoBehaviour
 
     [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
     public float FallTimeout = 0.15f;
-    
-    [Header("Magic")]
-    [Tooltip("The amount of mana a magic attack costs.")]
-    public float magicManaCost = 10f;
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -92,7 +91,6 @@ public class AetherboundPlayerController : MonoBehaviour
     private int _animIDJump;
     private int _animIDFreeFall;
     private int _animIDMotionSpeed;
-    private int _animIDMagic;
 
 #if ENABLE_INPUT_SYSTEM 
     private PlayerInput _playerInput;
@@ -100,8 +98,6 @@ public class AetherboundPlayerController : MonoBehaviour
     private Animator _animator;
     private CharacterController _controller;
     private AetherboundInputs _input;
-    private ManaManager _manaManager;
-    private MagicCasting _magicCasting;
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
@@ -124,8 +120,6 @@ public class AetherboundPlayerController : MonoBehaviour
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<AetherboundInputs>();
-        _manaManager = GetComponent<ManaManager>();
-        _magicCasting = GetComponent<MagicCasting>();
 #if ENABLE_INPUT_SYSTEM 
         _playerInput = GetComponent<PlayerInput>();
 #else
@@ -160,7 +154,6 @@ public class AetherboundPlayerController : MonoBehaviour
         _animIDJump = Animator.StringToHash("Jump");
         _animIDFreeFall = Animator.StringToHash("FreeFall");
         _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-        _animIDMagic = Animator.StringToHash("Magic");
     }
 
     private void GroundedCheck()
@@ -292,20 +285,7 @@ public class AetherboundPlayerController : MonoBehaviour
     {
         if (_input.magic)
         {
-            if (_manaManager != null && _manaManager.currentMana >= magicManaCost)
-            {
-                _manaManager.UseMana(magicManaCost);
-                if (_hasAnimator)
-                {
-                    _animator.SetTrigger(_animIDMagic);
-                }
-                _magicCasting?.CastMagic();
-            }
-            else
-            {
-                Debug.Log("Not enough mana to cast magic!");
-            }
-
+            OnMagicCast?.Invoke();
             _input.magic = false;
         }
     }
