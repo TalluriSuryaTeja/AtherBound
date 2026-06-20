@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1f33662511be34c8cd0ddbb20d45a3, type: 3}
-  m_Name: BlackSmith
+  m_Name: FarmerProfession
   m_EditorClassIdentifier: Aetherbound.Data::ProfessionData
-  professionName: Blacksmith
+  professionName: Farming
   description: 
   icon: {fileID: 0}
   level: 0

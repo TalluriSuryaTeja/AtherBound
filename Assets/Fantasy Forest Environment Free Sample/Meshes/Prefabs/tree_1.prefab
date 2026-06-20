@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4483593724505930}
   - component: {fileID: 33598523913830780}
   - component: {fileID: 23813919065720464}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tree_1_LOD0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,8 @@ GameObject:
   - component: {fileID: 4279449019447086}
   - component: {fileID: 205814739888609900}
   - component: {fileID: 136213828768348902}
-  m_Layer: 0
+  - component: {fileID: 5897119836640590938}
+  m_Layer: 3
   m_Name: tree_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,6 +179,26 @@ CapsuleCollider:
   m_Height: 13.23
   m_Direction: 1
   m_Center: {x: 0, y: 4.81, z: 0}
+--- !u!114 &5897119836640590938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148613061152340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ee123b121c1284ea0924ba4ea933e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Aetherbound.World::ResourceNode
+  promptMessage: 
+  itemToYield: {fileID: 0}
+  quantity: 1
+  gatheringTime: 2
+  respawnTime: 60
+  associatedProfession: {fileID: 11400000, guid: c4c4f7ad948fcb840ab1f0fda10a99ff, type: 2}
+  xpValue: 10
+  resourceVisual: {fileID: 0}
 --- !u!1 &1244885105455798
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +210,7 @@ GameObject:
   - component: {fileID: 4732195966714546}
   - component: {fileID: 33602708680440096}
   - component: {fileID: 23344532469829486}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tree_1_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +301,7 @@ GameObject:
   - component: {fileID: 4087411307371584}
   - component: {fileID: 33431926756644316}
   - component: {fileID: 23205771530848140}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tree_1_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

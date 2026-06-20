@@ -6,7 +6,8 @@
         "GUID:e31862a906236314299e52d43c242345",
         "Aetherbound.Data",
         "Aetherbound.Managers",
-        "Aetherbound.Core"
+        "Aetherbound.Core",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

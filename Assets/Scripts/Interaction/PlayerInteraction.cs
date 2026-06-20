@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +9,7 @@ public class PlayerInteraction : MonoBehaviour
     public float interactionDistance = 2f;      // For targeted raycast
     public float lootRadius = 0.5f;             // For area-of-effect loot detection
     public LayerMask interactionLayer;
-    public Text interactionPromptText;
+    public TextMeshProUGUI interactionPromptText;
     public Camera mainCamera;
 
     private Interactable focusedInteractable;   // The item targeted by the raycast
