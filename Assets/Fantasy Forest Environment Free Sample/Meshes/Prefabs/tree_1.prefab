@@ -102,7 +102,6 @@ GameObject:
   - component: {fileID: 4279449019447086}
   - component: {fileID: 205814739888609900}
   - component: {fileID: 136213828768348902}
-  - component: {fileID: -7994006389880126180}
   m_Layer: 0
   m_Name: tree_1
   m_TagString: Untagged
@@ -179,21 +178,6 @@ CapsuleCollider:
   m_Height: 13.23
   m_Direction: 1
   m_Center: {x: 0, y: 4.81, z: 0}
---- !u!114 &-7994006389880126180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1148613061152340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f43337301dee0943bd8dd2e6ca01caf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
-  resourceType: 0
-  amountPerGather: 1
-  totalResource: 5
 --- !u!1 &1244885105455798
 GameObject:
   m_ObjectHideFlags: 0

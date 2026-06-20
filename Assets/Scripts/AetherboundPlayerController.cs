@@ -98,7 +98,9 @@ public class AetherboundPlayerController : MonoBehaviour
     private Animator _animator;
     private CharacterController _controller;
     private AetherboundInputs _input;
-    private GameObject _mainCamera;
+    
+    [Tooltip("The camera associated with this player (used for movement relative to camera).")]
+    public GameObject mainCamera;
 
     private const float _threshold = 0.01f;
 
@@ -108,9 +110,9 @@ public class AetherboundPlayerController : MonoBehaviour
 
     private void Awake()
     {
-        if (_mainCamera == null)
+        if (mainCamera == null)
         {
-            _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
     }
 
@@ -209,7 +211,7 @@ public class AetherboundPlayerController : MonoBehaviour
 
         if (_input.move != Vector2.zero)
         {
-            _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.transform.eulerAngles.y;
+            _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y;
             float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
         }

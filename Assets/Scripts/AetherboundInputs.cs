@@ -12,6 +12,9 @@ public class AetherboundInputs : MonoBehaviour
     public bool jump;
     public bool sprint;
     public bool magic; // Our custom magic input
+    public bool interact;
+    public bool pickAll;
+    public float scroll;
 
     [Header("Movement Settings")]
     public bool analogMovement;
@@ -48,6 +51,21 @@ public class AetherboundInputs : MonoBehaviour
     {
         MagicInput(value.isPressed);
     }
+
+    public void OnInteract(InputValue value)
+    {
+        InteractInput(value.isPressed);
+    }
+
+    public void OnPickAll(InputValue value)
+    {
+        PickAllInput(value.isPressed);
+    }
+
+    public void OnScroll(InputValue value)
+    {
+        ScrollInput(value.Get<Vector2>().y);
+    }
 #endif
 
     public void MoveInput(Vector2 newMoveDirection)
@@ -73,6 +91,21 @@ public class AetherboundInputs : MonoBehaviour
     public void MagicInput(bool newMagicState)
     {
         magic = newMagicState;
+    }
+
+    public void InteractInput(bool newInteractState)
+    {
+        interact = newInteractState;
+    }
+
+    public void PickAllInput(bool newPickAllState)
+    {
+        pickAll = newPickAllState;
+    }
+
+    public void ScrollInput(float newScrollState)
+    {
+        scroll = newScrollState;
     }
 
     private void OnApplicationFocus(bool hasFocus)

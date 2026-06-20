@@ -14,9 +14,11 @@ public class PlayerInteraction : MonoBehaviour
     private Interactable focusedInteractable;   // The item targeted by the raycast
     private List<Interactable> nearbyInteractables = new List<Interactable>();
     private int nearbyCurrentIndex = 0;
+    private AetherboundInputs _input;
 
     void Start()
     {
+        _input = GetComponent<AetherboundInputs>();
         if (interactionPromptText != null) interactionPromptText.gameObject.SetActive(false);
     }
 
@@ -72,16 +74,18 @@ public class PlayerInteraction : MonoBehaviour
 
     private void HandleInput()
     {
+        if (_input == null) return;
+
         // Scroll through nearby loot
         if (nearbyInteractables.Count > 1 && focusedInteractable == null) // Allow scroll only when not targeting something specific
         {
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            float scroll = _input.scroll;
             if (scroll > 0f) nearbyCurrentIndex = (nearbyCurrentIndex - 1 + nearbyInteractables.Count) % nearbyInteractables.Count;
             else if (scroll < 0f) nearbyCurrentIndex = (nearbyCurrentIndex + 1) % nearbyInteractables.Count;
         }
 
         // Primary interaction with 'E'
-        if (Input.GetKeyDown(KeyCode.E))
+        if (_input.interact)
         {
             // Prioritize the focused interactable
             if (focusedInteractable != null)
@@ -93,12 +97,14 @@ public class PlayerInteraction : MonoBehaviour
             {
                 nearbyInteractables[nearbyCurrentIndex].BaseInteract();
             }
+            _input.interact = false;
         }
 
         // "Pick All" with 'F'
-        if (Input.GetKeyDown(KeyCode.F) && CanPickAll())
+        if (_input.pickAll && CanPickAll())
         {
             PickAll();
+            _input.pickAll = false;
         }
     }
 

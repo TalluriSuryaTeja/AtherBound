@@ -132,10 +132,37 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
                     ""name"": ""Magic"",
                     ""type"": ""Button"",
                     ""id"": ""a1f2e3d4-b5c6-7890-1234-567890abcdef"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""34f3cefd-b9a0-41d3-82bd-47a020521187"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pickup"",
+                    ""type"": ""Button"",
+                    ""id"": ""d88f25a2-1909-4553-afa3-892803d025fe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""ae69273f-9ac4-4dba-9e59-da87396212c8"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -336,6 +363,61 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
                     ""action"": ""Magic"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f52256f-2ef8-4bfb-ae5e-08490c17fb57"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40602526-b70a-4d94-baee-54a826440cee"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Xbox Controller"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab34e2b7-f70f-44c1-ac3a-26c5f89a29ed"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Pickup"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""695b1def-56f0-40fb-8d3d-27113732580f"",
+                    ""path"": ""<XInputController>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Xbox Controller"",
+                    ""action"": ""Pickup"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cdb9f9a7-94ba-46ea-bad1-64575772c718"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -397,6 +479,9 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Magic = m_Player.FindAction("Magic", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Pickup = m_Player.FindAction("Pickup", throwIfNotFound: true);
+        m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
     }
 
     ~@AetherboundInputActions()
@@ -482,6 +567,9 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Magic;
+    private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Pickup;
+    private readonly InputAction m_Player_Scroll;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -513,6 +601,18 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
         /// Provides access to the underlying input action "Player/Magic".
         /// </summary>
         public InputAction @Magic => m_Wrapper.m_Player_Magic;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Pickup".
+        /// </summary>
+        public InputAction @Pickup => m_Wrapper.m_Player_Pickup;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Scroll".
+        /// </summary>
+        public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -554,6 +654,15 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
             @Magic.started += instance.OnMagic;
             @Magic.performed += instance.OnMagic;
             @Magic.canceled += instance.OnMagic;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
+            @Pickup.started += instance.OnPickup;
+            @Pickup.performed += instance.OnPickup;
+            @Pickup.canceled += instance.OnPickup;
+            @Scroll.started += instance.OnScroll;
+            @Scroll.performed += instance.OnScroll;
+            @Scroll.canceled += instance.OnScroll;
         }
 
         /// <summary>
@@ -580,6 +689,15 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
             @Magic.started -= instance.OnMagic;
             @Magic.performed -= instance.OnMagic;
             @Magic.canceled -= instance.OnMagic;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
+            @Pickup.started -= instance.OnPickup;
+            @Pickup.performed -= instance.OnPickup;
+            @Pickup.canceled -= instance.OnPickup;
+            @Scroll.started -= instance.OnScroll;
+            @Scroll.performed -= instance.OnScroll;
+            @Scroll.canceled -= instance.OnScroll;
         }
 
         /// <summary>
@@ -707,5 +825,26 @@ public partial class @AetherboundInputActions: IInputActionCollection2, IDisposa
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMagic(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Pickup" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPickup(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Scroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnScroll(InputAction.CallbackContext context);
     }
 }
