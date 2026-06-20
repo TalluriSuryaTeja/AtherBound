@@ -31,7 +31,7 @@ public class ResourceNode : Interactable
         }
     }
 
-    public override void Interact()
+    protected override void Interact()
     {
         if (isDepleted) return;
 

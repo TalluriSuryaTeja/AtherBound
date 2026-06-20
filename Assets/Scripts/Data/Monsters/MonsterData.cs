@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-[CreateAssetMenu(fileName = "New MonsterData", menuName = "AetherBound/Data/Monster")]
+[CreateAssetMenu(fileName = "New MonsterData", menuName = "Aetherbound/Data/Monster")]
 public class MonsterData : ScriptableObject
 {
     [Header("Info")]
