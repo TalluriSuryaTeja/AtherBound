@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a44fff7f37809c4986e2678bf528187, type: 3}
-  m_Name: Wood
+  m_Name: Stone
   m_EditorClassIdentifier: Aetherbound.Data::ResourceData
   itemName: 
   description: 

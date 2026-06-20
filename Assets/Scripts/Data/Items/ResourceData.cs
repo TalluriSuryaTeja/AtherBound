@@ -1,20 +1,11 @@
 using UnityEngine;
 
-/// <summary>
-/// The abstract base class for all items in the game.
-/// </summary>
 [CreateAssetMenu(fileName = "New ResourceData", menuName = "Aetherbound/Data/Resource")]
-public class ResourceData : ScriptableObject
+public class ResourceData : ItemData
 {
-    [Header("Resource Base Info")]
-    public string resourceName;
-    [TextArea(3, 5)]
-    public string description;
-    public Sprite resourceIcon;
-    public ItemRarity rarity;
-    public int resourceLevel;
-
-    [Header("Stacking")]
-    public bool isStackable = true;
-    public int maxStackSize = 99;
+    // All base fields (itemName, description, itemIcon, maxStackSize, etc.) 
+    // are automatically inherited from the abstract ItemData class!
+    
+    // You can add resource-specific fields here later if you need them,
+    // like "public ResourceType type;"
 }
