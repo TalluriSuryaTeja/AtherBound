@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Aetherbound.Data",
-        "Aetherbound.Managers"
+        "Aetherbound.Managers",
+        "Aetherbound.Interaction"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

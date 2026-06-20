@@ -128,15 +128,15 @@ public class MonsterStats : MonoBehaviour
             Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
 
             GameObject lootObject = Instantiate(itemPickupPrefab, spawnPosition, Quaternion.identity);
-            ItemPickup pickup = lootObject.GetComponent<ItemPickup>();
+            IItemPickup pickup = lootObject.GetComponent<IItemPickup>();
 
             if (pickup != null)
             {
-                pickup.item = item;
+                pickup.Item = item;
             }
             else
             {
-                Debug.LogError("Item pickup prefab is missing the ItemPickup script.");
+                Debug.LogError("Item pickup prefab is missing the IItemPickup script.");
             }
         }
     }

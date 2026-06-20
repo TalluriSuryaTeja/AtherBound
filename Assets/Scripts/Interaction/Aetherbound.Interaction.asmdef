@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "GUID:f245ad43a04b34547a51c367a5b74c5d",
-        "GUID:e31862a906236314299e52d43c242345"
+        "GUID:e31862a906236314299e52d43c242345",
+        "Aetherbound.Data",
+        "Aetherbound.Managers"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

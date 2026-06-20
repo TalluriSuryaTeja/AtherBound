@@ -11,4 +11,5 @@ public class ProfessionData : ScriptableObject
     [Header("Progression")]
     public int level;
     public int experience;
+    public AnimationCurve xpCurve;
 }

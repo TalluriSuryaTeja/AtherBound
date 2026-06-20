@@ -172,14 +172,14 @@ public class InventoryManager : MonoBehaviour
 
         // Instantiate the item pickup in the world
         GameObject droppedItemObject = Instantiate(itemPickupPrefab, dropPosition, Quaternion.identity);
-        ItemPickup pickup = droppedItemObject.GetComponent<ItemPickup>();
+        IItemPickup pickup = droppedItemObject.GetComponent<IItemPickup>();
         if(pickup != null)
         {
-            pickup.item = itemToDrop;
+            pickup.Item = itemToDrop;
         }
         else
         {
-            Debug.LogError("Assigned Item Drop Prefab does not have an ItemPickup component!");
+            Debug.LogError("Assigned Item Drop Prefab does not have an IItemPickup component!");
         }
 
         // Remove the item from inventory

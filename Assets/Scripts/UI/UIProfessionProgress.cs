@@ -36,13 +36,13 @@ public class UIProfessionProgress : MonoBehaviour
         }
     }
 
-    private void UpdateProfessionUI(ProfessionData profession, float currentXP, float requiredXP)
+    private void UpdateProfessionUI(ProfessionData profession, int currentXP, int requiredXP)
     {
         if (profession == professionToDisplay)
         {
             if (requiredXP > 0)
             {
-                xpSlider.value = currentXP / requiredXP;
+                xpSlider.value = (float)currentXP / requiredXP;
             }
             else
             {

@@ -1,8 +1,9 @@
 using UnityEngine;
 
-public class ItemPickup : Interactable
+public class ItemPickup : Interactable, IItemPickup
 {
     public ItemData item;
+    public ItemData Item { get => item; set => item = value; }
 
     private void Start()
     {

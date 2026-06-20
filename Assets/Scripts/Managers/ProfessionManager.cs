@@ -8,7 +8,7 @@ public class ProfessionManager : MonoBehaviour
 
     public List<ProfessionData> professions = new List<ProfessionData>();
 
-    public event Action<ProfessionData, float, float> onExperienceChanged;
+    public event Action<ProfessionData, int, int> onExperienceChanged;
     public event Action<ProfessionData, int> onLevelUp;
 
     private void Awake()
@@ -38,7 +38,7 @@ public class ProfessionManager : MonoBehaviour
         }
     }
 
-    public float GetExperience(ProfessionData profession)
+    public int GetExperience(ProfessionData profession)
     {
         return profession.experience;
     }
@@ -48,9 +48,9 @@ public class ProfessionManager : MonoBehaviour
         return profession.level;
     }
 
-    public float GetXPForNextLevel(ProfessionData profession)
+    public int GetXPForNextLevel(ProfessionData profession)
     {
-        if (profession.level == 0) return profession.xpCurve.Evaluate(0);
-        return profession.xpCurve.Evaluate(profession.level);
+        if (profession.level == 0) return Mathf.FloorToInt(profession.xpCurve.Evaluate(0));
+        return Mathf.FloorToInt(profession.xpCurve.Evaluate(profession.level));
     }
 }

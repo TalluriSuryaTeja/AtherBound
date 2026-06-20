@@ -1,6 +1,11 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Aetherbound.UI.csproj" />
   <Project Path="Aetherbound.Managers.csproj" />
+  <Project Path="Aetherbound.Core.csproj" />
   <Project Path="Aetherbound.Data.csproj" />
+  <Project Path="Aetherbound.World.csproj" />
+  <Project Path="Aetherbound.AI.csproj" />
+  <Project Path="Aetherbound.Interaction.csproj" />
 </Solution>
