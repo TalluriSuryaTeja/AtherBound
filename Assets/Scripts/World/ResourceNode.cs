@@ -1,97 +1,107 @@
 using UnityEngine;
-using System.Collections;
 
 public class ResourceNode : Interactable
 {
-    [Header("Resource Settings")]
-    public ItemData itemToYield;
-    public int quantity = 1;
-    public float gatheringTime = 2.0f;
-    public float respawnTime = 60.0f;
+    public ItemData resourceItem; // The item to give (e.g., Wood Log)
+    public int resourceAmount = 5; // How many items this node contains
+    public float respawnTime = 30f; // Time in seconds to respawn
+    public GameObject depletedVisual; // Optional: A different model to show when depleted (e.g., a stump)
 
-    [Header("Profession & Experience")]
-    [Tooltip("The profession associated with this node (e.g., Mining, Herbalism).")]
-    public ProfessionData associatedProfession;
-    [Tooltip("The amount of XP granted in the associated profession upon a successful gather.")]
-    public float xpValue = 10f;
-
-    [Header("Visuals")]
-    [Tooltip("The main visual object of the node. This will be disabled when depleted.")]
-    public GameObject resourceVisual;
-
+    private int currentAmount;
     private bool isDepleted = false;
+    private float respawnTimer = 0f;
+    private GameObject originalVisual;
 
-    private void Start()
+    void Start()
     {
-        if(string.IsNullOrEmpty(promptMessage))
+        currentAmount = resourceAmount;
+        promptMessage = $"Gather {resourceItem.itemName}";
+        originalVisual = GetMainVisual(); // Assumes the main model is the first child
+    }
+
+    void Update()
+    {
+        if (isDepleted)
         {
-            promptMessage = $"Gather {itemToYield.name}";
+            respawnTimer += Time.deltaTime;
+            if (respawnTimer >= respawnTime)
+            {
+                Respawn();
+            }
         }
     }
 
-    protected override void Interact()
+    public override void Interact()
     {
-        if (isDepleted || itemToYield == null)
+        if (isDepleted) return;
+
+        Debug.Log($"Gathering from {resourceItem.itemName} node.");
+
+        // Try to add the item to the player's inventory
+        bool wasAdded = InventoryManager.Instance.AddItem(resourceItem, 1);
+
+        if (wasAdded)
         {
-            return;
-        }
+            currentAmount--;
+            Debug.Log($"Gave 1 {resourceItem.itemName}. {currentAmount} remaining.");
 
-        StartCoroutine(GatherCoroutine());
-    }
-
-    private IEnumerator GatherCoroutine()
-    {
-        Debug.Log($"Gathering {itemToYield.name}...");
-        // TODO: Implement a gathering timer UI
-        yield return new WaitForSeconds(gatheringTime);
-
-        DepleteNode();
-
-        // Grant XP to the player
-        if (associatedProfession != null && ProfessionManager.Instance != null)
-        {
-            ProfessionManager.Instance.AddExperience(associatedProfession, (int)xpValue);
-        }
-
-        // Add the item to the player's inventory
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.AddItem(itemToYield, quantity);
-            Debug.Log($"Gathered {quantity}x {itemToYield.name}! Gained {xpValue} {associatedProfession.professionName} XP.");
+            if (currentAmount <= 0)
+            {
+                Deplete();
+            }
         }
         else
         {
-            Debug.LogWarning("InventoryManager not found. Could not add item.");
+            Debug.LogWarning("Inventory is full!");
+            // Optionally, provide feedback to the player that their inventory is full
         }
     }
 
-    private void DepleteNode()
+    private void Deplete()
     {
         isDepleted = true;
+        respawnTimer = 0f;
+        Debug.Log($"{resourceItem.itemName} node depleted.");
 
-        if (resourceVisual != null)
+        // Switch to the depleted visual, if one is assigned
+        if (depletedVisual != null)
         {
-            resourceVisual.SetActive(false);
+            if(originalVisual != null) originalVisual.SetActive(false);
+            depletedVisual.SetActive(true);
+        }
+        else
+        {
+            // If no depleted visual, just disable the collider so it can't be interacted with
+            GetComponent<Collider>().enabled = false;
         }
 
-        StartCoroutine(RespawnCoroutine());
+        // To hide the interaction prompt immediately
+        gameObject.layer = LayerMask.NameToLayer("Default"); 
     }
 
-    private IEnumerator RespawnCoroutine()
-    {
-        yield return new WaitForSeconds(respawnTime);
-        RespawnNode();
-    }
-
-    private void RespawnNode()
+    private void Respawn()
     {
         isDepleted = false;
+        currentAmount = resourceAmount;
+        Debug.Log($"{resourceItem.itemName} node has respawned.");
 
-        if (resourceVisual != null)
+        if (depletedVisual != null)
         {
-            resourceVisual.SetActive(true);
+            if(originalVisual != null) originalVisual.SetActive(true);
+            depletedVisual.SetActive(false);
+        }
+        else
+        {
+            GetComponent<Collider>().enabled = true;
         }
 
-        Debug.Log("A resource node has respawned.");
+        gameObject.layer = LayerMask.NameToLayer("Interaction");
+    }
+
+    // Helper to get the main visual of the node
+    private GameObject GetMainVisual()
+    {
+        if(transform.childCount > 0) return transform.GetChild(0).gameObject;
+        return null;
     }
 }
