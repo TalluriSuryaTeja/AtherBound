@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class ResourceNode : Interactable
 {
-    public ResourceSourceData resourceSourceData;
+    public ItemData resourceItem; // The item to give (e.g., Wood Log)
+    public int resourceAmount = 5; // How many items this node contains
+    public float respawnTime = 30f; // Time in seconds to respawn
+    public GameObject depletedVisual; // Optional: A different model to show when depleted (e.g., a stump)
 
     private int currentAmount;
     private bool isDepleted = false;
@@ -11,16 +14,9 @@ public class ResourceNode : Interactable
 
     void Start()
     {
-        if (resourceSourceData == null)
-        {
-            Debug.LogError($"Resource Node on {gameObject.name} is missing ResourceSourceData!");
-            this.enabled = false;
-            return;
-        }
-
-        currentAmount = resourceSourceData.amountInNode;
-        promptMessage = $"Gather {resourceSourceData.sourceName}";
-        originalVisual = GetMainVisual(); 
+        currentAmount = resourceAmount;
+        promptMessage = $"Gather {resourceItem.itemName}";
+        originalVisual = GetMainVisual(); // Assumes the main model is the first child
     }
 
     void Update()
@@ -28,7 +24,7 @@ public class ResourceNode : Interactable
         if (isDepleted)
         {
             respawnTimer += Time.deltaTime;
-            if (respawnTimer >= resourceSourceData.respawnTime)
+            if (respawnTimer >= respawnTime)
             {
                 Respawn();
             }
@@ -39,14 +35,15 @@ public class ResourceNode : Interactable
     {
         if (isDepleted) return;
 
-        Debug.Log($"Gathering from {resourceSourceData.sourceName} node.");
+        Debug.Log($"Gathering from {resourceItem.itemName} node.");
 
-        bool wasAdded = InventoryManager.Instance.AddItem(resourceSourceData.itemToGive, 1);
+        // Try to add the item to the player's inventory
+        bool wasAdded = InventoryManager.Instance.AddItem(resourceItem, 1);
 
         if (wasAdded)
         {
             currentAmount--;
-            Debug.Log($"Gave 1 {resourceSourceData.itemToGive.resourceName}. {currentAmount} remaining.");
+            Debug.Log($"Gave 1 {resourceItem.itemName}. {currentAmount} remaining.");
 
             if (currentAmount <= 0)
             {
@@ -56,6 +53,7 @@ public class ResourceNode : Interactable
         else
         {
             Debug.LogWarning("Inventory is full!");
+            // Optionally, provide feedback to the player that their inventory is full
         }
     }
 
@@ -63,31 +61,34 @@ public class ResourceNode : Interactable
     {
         isDepleted = true;
         respawnTimer = 0f;
-        Debug.Log($"{resourceSourceData.sourceName} node depleted.");
+        Debug.Log($"{resourceItem.itemName} node depleted.");
 
-        if (resourceSourceData.depletedVisual != null)
+        // Switch to the depleted visual, if one is assigned
+        if (depletedVisual != null)
         {
             if(originalVisual != null) originalVisual.SetActive(false);
-            resourceSourceData.depletedVisual.SetActive(true);
+            depletedVisual.SetActive(true);
         }
         else
         {
+            // If no depleted visual, just disable the collider so it can't be interacted with
             GetComponent<Collider>().enabled = false;
         }
 
+        // To hide the interaction prompt immediately
         gameObject.layer = LayerMask.NameToLayer("Default"); 
     }
 
     private void Respawn()
     {
         isDepleted = false;
-        currentAmount = resourceSourceData.amountInNode;
-        Debug.Log($"{resourceSourceData.sourceName} node has respawned.");
+        currentAmount = resourceAmount;
+        Debug.Log($"{resourceItem.itemName} node has respawned.");
 
-        if (resourceSourceData.depletedVisual != null)
+        if (depletedVisual != null)
         {
             if(originalVisual != null) originalVisual.SetActive(true);
-            resourceSourceData.depletedVisual.SetActive(false);
+            depletedVisual.SetActive(false);
         }
         else
         {
@@ -97,6 +98,7 @@ public class ResourceNode : Interactable
         gameObject.layer = LayerMask.NameToLayer("Interaction");
     }
 
+    // Helper to get the main visual of the node
     private GameObject GetMainVisual()
     {
         if(transform.childCount > 0) return transform.GetChild(0).gameObject;
