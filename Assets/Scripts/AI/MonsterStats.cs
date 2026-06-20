@@ -5,6 +5,7 @@ using System.Linq;
 public class MonsterStats : MonoBehaviour
 {
     public MonsterData monsterData;
+    public GameObject itemPickupPrefab; // Assign a prefab with ItemPickup script in the editor
 
     [Header("Current Stats")]
     public int currentLevel = 1;
@@ -111,12 +112,32 @@ public class MonsterStats : MonoBehaviour
             {
                 if (Random.value <= drop.dropChance) // Random.value is between 0.0 and 1.0
                 {
-                    // TODO: Implement inventory logic to add item to player
-                    Debug.Log($"Dropped {drop.item.name}!");
+                    SpawnLoot(drop.item);
                 }
             }
         }
 
         Destroy(gameObject);
+    }
+
+    private void SpawnLoot(ItemData item)
+    {
+        if (itemPickupPrefab != null)
+        {
+            // Spawn the loot item 1.5 units above the monster's position
+            Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+
+            GameObject lootObject = Instantiate(itemPickupPrefab, spawnPosition, Quaternion.identity);
+            ItemPickup pickup = lootObject.GetComponent<ItemPickup>();
+
+            if (pickup != null)
+            {
+                pickup.item = item;
+            }
+            else
+            {
+                Debug.LogError("Item pickup prefab is missing the ItemPickup script.");
+            }
+        }
     }
 }

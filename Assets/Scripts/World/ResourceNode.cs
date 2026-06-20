@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(BoxCollider))]
-public class ResourceNode : MonoBehaviour
+public class ResourceNode : Interactable
 {
     [Header("Resource Settings")]
     public ItemData itemToYield;
@@ -22,17 +21,15 @@ public class ResourceNode : MonoBehaviour
 
     private bool isDepleted = false;
 
-    void Awake()
+    private void Start()
     {
-        GetComponent<BoxCollider>().isTrigger = true;
+        if(string.IsNullOrEmpty(promptMessage))
+        {
+            promptMessage = $"Gather {itemToYield.name}";
+        }
     }
 
-    public bool IsDepleted()
-    {
-        return isDepleted;
-    }
-
-    public void StartGathering()
+    protected override void Interact()
     {
         if (isDepleted || itemToYield == null)
         {
@@ -45,6 +42,7 @@ public class ResourceNode : MonoBehaviour
     private IEnumerator GatherCoroutine()
     {
         Debug.Log($"Gathering {itemToYield.name}...");
+        // TODO: Implement a gathering timer UI
         yield return new WaitForSeconds(gatheringTime);
 
         DepleteNode();

@@ -32,9 +32,13 @@ public class InventoryManager : MonoBehaviour
 
     public event Action onInventoryChanged;
 
-    [Header("Inventory")]
+    [Header("Inventory Settings")]
     [SerializeField] private List<InventorySlot> inventorySlots = new List<InventorySlot>();
     public int inventorySize = 20;
+
+    [Header("Item Dropping")]
+    public GameObject itemPickupPrefab; // Assign in editor
+    public Transform playerTransform; // Assign player's transform in editor
 
     public List<InventorySlot> items => inventorySlots;
 
@@ -135,5 +139,50 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.LogWarning($"Could not find enough {item.itemName} to remove.");
         }
+    }
+
+    public void RemoveFromSlot(int slotIndex, int quantity = 1)
+    {
+        if (slotIndex < 0 || slotIndex >= inventorySlots.Count) return;
+
+        InventorySlot slot = inventorySlots[slotIndex];
+        slot.RemoveQuantity(quantity);
+
+        if (slot.quantity <= 0)
+        {
+            inventorySlots.RemoveAt(slotIndex);
+        }
+        onInventoryChanged?.Invoke();
+    }
+
+    public void DropItem(int slotIndex, int quantity = 1)
+    {
+        if (slotIndex < 0 || slotIndex >= inventorySlots.Count) return;
+        if (itemPickupPrefab == null || playerTransform == null)
+        {
+            Debug.LogError("Item Drop Prefab or Player Transform not assigned in InventoryManager.");
+            return;
+        }
+
+        InventorySlot slot = inventorySlots[slotIndex];
+        ItemData itemToDrop = slot.item;
+
+        // Calculate drop position in front of the player
+        Vector3 dropPosition = playerTransform.position + playerTransform.forward * 1.5f + Vector3.up * 0.5f;
+
+        // Instantiate the item pickup in the world
+        GameObject droppedItemObject = Instantiate(itemPickupPrefab, dropPosition, Quaternion.identity);
+        ItemPickup pickup = droppedItemObject.GetComponent<ItemPickup>();
+        if(pickup != null)
+        {
+            pickup.item = itemToDrop;
+        }
+        else
+        {
+            Debug.LogError("Assigned Item Drop Prefab does not have an ItemPickup component!");
+        }
+
+        // Remove the item from inventory
+        RemoveFromSlot(slotIndex, quantity);
     }
 }

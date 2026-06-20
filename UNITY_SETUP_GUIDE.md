@@ -96,3 +96,32 @@ This guide provides step-by-step instructions to set up the game's backend and U
 6.  Click **Add Component** and add the `ExperienceBarUI` script.
 7.  Drag the `Experience_Slider` itself into the **Xp Slider** field.
 8.  Drag the `Level_Text` object into the **Level Text** field.
+
+---
+
+## Part 5: Setting Up the Interaction UI (No Code Changes)
+
+**Goal:** To display on-screen prompts when the player can interact with an object.
+
+### Step 5.1: Create the Interaction Prompt UI
+1.  In the **Hierarchy** window, right-click on your **Canvas** and select **UI > Text**. 
+2.  Rename the new UI object to `InteractionPromptText`.
+3.  Select the `InteractionPromptText` object.
+4.  In the **Inspector**, find the **Rect Transform**. Click the anchor presets box, hold down `Alt`+`Shift`, and select the **bottom-center** anchor.
+5.  Adjust the `Pos Y` field to around `50` to give it some space from the bottom of the screen.
+6.  In the **Text** component, set the **Alignment** to center-middle.
+7.  Choose a clear **Font Size** (e.g., 24) and **Color** (e.g., white).
+
+### Step 5.2: Link the Prompt to the Player
+1.  Select your player object in the Hierarchy.
+2.  In the Inspector, find the **Player Interaction** script component.
+3.  You will see a field named **Interaction Prompt Text**. Drag the `InteractionPromptText` object from your Hierarchy into this slot.
+
+### Step 5.3: Configure Interaction Layers
+1.  In the Unity Editor, go to **Edit > Project Settings**.
+2.  Select the **Tags and Layers** panel.
+3.  Under **Layers**, find an empty user layer (e.g., User Layer 8) and name it `Interactable`.
+4.  Find any object in your scene that uses an `Interactable` script (like a `ResourceNode` or an `ItemPickup` prefab).
+5.  Select the object. In the Inspector at the top right, click the **Layer** dropdown and select your new `Interactable` layer.
+6.  A dialog may ask if you want to apply this to children. Choose **"Yes, change children."**
+7.  Finally, select your player object. In the **Player Interaction** component, click the **Interaction Layer** dropdown and select the `Interactable` layer.
